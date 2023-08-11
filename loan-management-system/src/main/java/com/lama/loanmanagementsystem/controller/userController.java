@@ -33,7 +33,12 @@ public class userController {
     public ResponseEntity<String> check_user(@RequestBody userData user){
         Optional<userData> emp = userrep.findById(user.getEmployee_id());
         if(emp.isPresent()){
-            return new ResponseEntity<>(user.getIsAdmin(), HttpStatus.OK);
+            if(emp.get().getPassword().equals(user.getPassword())){
+                return new ResponseEntity<>(emp.get().getIsAdmin(), HttpStatus.OK);
+            }
+            else{
+                return new ResponseEntity<>("invalid password",HttpStatus.NOT_FOUND);
+            }
         }
         else{
             return new ResponseEntity<>("user_not_present",HttpStatus.NOT_FOUND);
