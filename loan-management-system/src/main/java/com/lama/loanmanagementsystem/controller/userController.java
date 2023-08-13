@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping
@@ -25,10 +26,17 @@ public class userController {
         else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @GetMapping("/users")
+    public List<userData> Get_users() {
+        return userrep.findAll();
+    }
+
     @PostMapping("/users")
     public userData Create_user(@Validated @RequestBody userData user){
+        System.out.println(user);
         return userrep.save(user);
     }
+    @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<String> check_user(@RequestBody userData user){
         Optional<userData> emp = userrep.findById(user.getEmployee_id());
@@ -37,11 +45,11 @@ public class userController {
                 return new ResponseEntity<>(emp.get().getIsAdmin(), HttpStatus.OK);
             }
             else{
-                return new ResponseEntity<>("invalid password",HttpStatus.NOT_FOUND);
+                return new ResponseEntity<>("invalid password",HttpStatus.OK);
             }
         }
         else{
-            return new ResponseEntity<>("user_not_present",HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>("user_not_present",HttpStatus.OK);
         }
     }
 
