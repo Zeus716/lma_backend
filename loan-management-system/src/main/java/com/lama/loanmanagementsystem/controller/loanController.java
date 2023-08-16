@@ -51,7 +51,7 @@ public class loanController {
     }
     @GetMapping("/loans")
     public ResponseEntity<?> getAllLoans(){
-        return new ResponseEntity(loanRep.findAll(),HttpStatus.OK);
+        return new ResponseEntity<>(loanRep.findAll(),HttpStatus.OK);
     }
 
     @DeleteMapping("/loans/{id}")

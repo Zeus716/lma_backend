@@ -28,19 +28,19 @@ public class userController {
     }
 
     @GetMapping("/users")
-    public List<userData> Get_users() {
+    public List<userData> getUsers() {
         return userrep.findAll();
     }
 
     @PostMapping("/users")
-    public userData Create_user(@Validated @RequestBody userData user){
+    public userData createUser(@Validated @RequestBody userData user){
 
         System.out.println(user);
         return userrep.save(user);
     }
     @Transactional
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> Update_user( @PathVariable(value = "id") Integer employee_id,
+    public ResponseEntity<String> updateUser( @PathVariable(value = "id") Integer employee_id,
                                               @RequestBody userData user){
         Optional<userData> exists = userrep.findById(employee_id);
         if(exists.isEmpty()){
@@ -57,7 +57,7 @@ public class userController {
         }
     }
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> Delete_user(@PathVariable(value = "id") Integer employee_id){
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") Integer employee_id){
         boolean exists = userrep.existsById(employee_id);
         if(!exists){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
@@ -70,7 +70,7 @@ public class userController {
     }
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<String> check_user(@RequestBody userData user){
+    public ResponseEntity<String> checkUser(@RequestBody userData user){
         Optional<userData> emp = userrep.findById(user.getEmployee_id());
         if(emp.isPresent()){
             if(emp.get().getPassword().equals(user.getPassword())){

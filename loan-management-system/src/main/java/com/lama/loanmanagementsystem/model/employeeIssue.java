@@ -6,6 +6,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -22,11 +23,14 @@ public class employeeIssue {
     @Column(nullable = false)
     private String itemId;
     @Column(nullable = false)
+
     private String employeeId;
     @Column(nullable = false)
     private Date issueDate;
     @Column(nullable = false)
     private Date returnDate;
+//    @OneToOne(mappedBy = "employeeIssue")
+//    private itemMaster item;
 
     public employeeIssue() {
     }
