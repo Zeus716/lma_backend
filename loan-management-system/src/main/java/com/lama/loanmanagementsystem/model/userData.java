@@ -9,9 +9,9 @@ public class userData {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer employee_id;
     @Column(nullable = false)
-    private String password;
+    private String password = "";
     @Column(nullable = false)
-    private String isAdmin;
+    private String isAdmin="";
 
     public Integer getEmployee_id() {
         return employee_id;
@@ -20,7 +20,11 @@ public class userData {
     public userData() {
     }
 
-    public userData(String password, String isAdmin) {
+    public userData(String isAdmin) {
+        this.isAdmin = isAdmin;
+    }
+
+    public userData(String password , String isAdmin ) {
 //        this.employee_id = employee_id;
         this.password = password;
         this.isAdmin = isAdmin;
