@@ -31,11 +31,11 @@ public class EmployeeMasterController {
         }
     }
     @PostMapping("/employees")
-    public employeeMaster createEmployee(@RequestBody employeeMaster employee){
-        return empRep.save(employee);
-//        return  new ResponseEntity<>(empRep.save(employee),HttpStatus.OK);
+    public ResponseEntity<?> createEmployee(@RequestBody employeeMaster employee){
+//        return empRep.save(employee);
+        return  new ResponseEntity<>(empRep.save(employee),HttpStatus.OK);
     }
-    @PutMapping("employees/{id}")
+    @PutMapping("/employees/{id}")
     public ResponseEntity<?> updateEmployee(@PathVariable(value = "id") String emp_id, @RequestBody employeeMaster emp){
         Optional<employeeMaster> employee = empRep.findById(emp_id);
         if(employee.isEmpty()){
@@ -50,8 +50,8 @@ public class EmployeeMasterController {
             return new ResponseEntity<>(employee,HttpStatus.OK);
         }
     }
-    @DeleteMapping("employees/{id}")
-    public ResponseEntity<?> deleteEmployee(@PathVariable(value = "id") String emp_id, @RequestBody employeeMaster emp){
+    @DeleteMapping("/employees/{id}")
+    public ResponseEntity<?> deleteEmployee(@PathVariable(value = "id") String emp_id){
         Optional<employeeMaster> employee = empRep.findById(emp_id);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not found",HttpStatus.OK);

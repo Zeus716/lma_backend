@@ -2,7 +2,6 @@ package com.lama.loanmanagementsystem.controller;
 
 import com.lama.loanmanagementsystem.model.userData;
 import com.lama.loanmanagementsystem.repository.userRepository;
-import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,12 +18,12 @@ public class userController {
     @Autowired
     private userRepository userrep;
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(@PathVariable(value="id") Integer employee_id){
-        Optional<userData> user = userrep.findById(employee_id);
+    public ResponseEntity<?> getUser(@PathVariable(value="id") String employeeId){
+        Optional<userData> user = userrep.findById(employeeId);
         if(user.isPresent()) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
-        else return new ResponseEntity<>("User doesn't exist with id :"+employee_id, HttpStatus.OK);
+        else return new ResponseEntity<>("User doesn't exist with id :"+employeeId, HttpStatus.OK);
     }
 
     @GetMapping("/users")
@@ -34,44 +33,38 @@ public class userController {
 
     @PostMapping("/users")
     public userData createUser(@Validated @RequestBody userData user){
-
-        System.out.println(user);
         return userrep.save(user);
     }
     @Transactional
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> updateUser( @PathVariable(value = "id") Integer employee_id,
+    public ResponseEntity<String> updateUser( @PathVariable(value = "id") String employee_id,
                                               @RequestBody userData user){
         Optional<userData> exists = userrep.findById(employee_id);
         if(exists.isEmpty()){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
         }
         else{
-            if(!user.getPassword().isEmpty()){
                 exists.get().setPassword(user.getPassword());
-            }
-            if(!user.getIsAdmin().isEmpty()){
                 exists.get().setIsAdmin(user.getIsAdmin());
-            }
             return new ResponseEntity<String>(String.format("User id %d updated",employee_id),HttpStatus.OK);
         }
     }
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") Integer employee_id){
-        boolean exists = userrep.existsById(employee_id);
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String employeeId){
+        boolean exists = userrep.existsById(employeeId);
         if(!exists){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
         }
         else{
-            userrep.deleteById(employee_id);
-            return new ResponseEntity<String>(String.format("User id %d deleted",employee_id),HttpStatus.OK);
+            userrep.deleteById(employeeId);
+            return new ResponseEntity<String>(String.format("User id %d deleted",employeeId),HttpStatus.OK);
         }
 
     }
     @CrossOrigin
     @PostMapping("/login")
     public ResponseEntity<String> checkUser(@RequestBody userData user){
-        Optional<userData> emp = userrep.findById(user.getEmployee_id());
+        Optional<userData> emp = userrep.findById(user.getEmployeeId());
         if(emp.isPresent()){
             if(emp.get().getPassword().equals(user.getPassword())){
                 return new ResponseEntity<>(emp.get().getIsAdmin(), HttpStatus.OK);

@@ -1,20 +1,26 @@
 package com.lama.loanmanagementsystem.model;
 
+import org.hibernate.annotations.GenericGenerator;
+
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user_data")
 public class userData {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer employee_id;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    private String employeeId;
     @Column(nullable = false)
     private String password = "";
     @Column(nullable = false)
     private String isAdmin="";
 
-    public Integer getEmployee_id() {
-        return employee_id;
+    public String getEmployeeId() {
+        return employeeId;
     }
 
     public userData() {
@@ -30,8 +36,8 @@ public class userData {
         this.isAdmin = isAdmin;
     }
 
-    public void setEmployee_id(Integer employee_id) {
-        this.employee_id = employee_id;
+    public void setEmployeeId(String employeeId) {
+        this.employeeId = employeeId;
     }
 
     public String getPassword() {

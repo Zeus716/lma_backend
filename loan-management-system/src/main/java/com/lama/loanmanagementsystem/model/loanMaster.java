@@ -14,18 +14,16 @@ public class loanMaster {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private String loanId = UUID.randomUUID().toString();
+    private String loanId ;
 
-    public loanMaster() {
-
-    }
+    @Column(nullable = false)
+    private Integer durationInMonths = 0;
 
     @Column(nullable = false)
     private String loanType ="def";
 
-    public loanMaster(Integer durationInMonths) {
-        this.durationInMonths = durationInMonths;
-    }
+    @OneToOne(mappedBy = "loanMaster")
+    private employeeCard empCard;
 
     public String getLoanId() {
         return loanId;
@@ -51,15 +49,12 @@ public class loanMaster {
         this.durationInMonths = durationInMonths;
     }
 
-    @Column(nullable = false)
-    private Integer durationInMonths = 0;
 
-    public loanMaster(String loanType) {
-        this.loanType = loanType;
+
+    public loanMaster() {
+
     }
-
     public loanMaster(String loanType, Integer durationInMonths) {
-//        this.loanId = UUID.randomUUID();
         this.loanType = loanType;
         this.durationInMonths = durationInMonths;
     }
