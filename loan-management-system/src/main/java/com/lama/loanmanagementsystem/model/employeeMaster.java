@@ -1,5 +1,6 @@
 package com.lama.loanmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,15 +26,17 @@ public class employeeMaster {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-
-    private String employeeId ; ;
+//    @Transient
+    private String employeeId ;
     private String employeeName;
     private String employeeDesignation;
     private Date employeeDOJ;
     private Date employeeDOB;
     private String gender;
     private String employeeDepartment;
-//    private List<itemMaster> items;
+//    @JsonBackReference
+    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId")
+    private List<itemMaster> items;
 
 
 }

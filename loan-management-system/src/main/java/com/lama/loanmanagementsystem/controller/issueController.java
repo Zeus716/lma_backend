@@ -46,6 +46,7 @@ public class issueController {
             exists.get().setEmployeeId(issue.getEmployeeId());
             exists.get().setItemId(issue.getItemId());
             exists.get().setReturnDate(issue.getReturnDate());
+            issueRep.save(exists.get());
             return new ResponseEntity<>(exists.get(), HttpStatus.OK);
         }
         else{

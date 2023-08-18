@@ -1,7 +1,9 @@
 package com.lama.loanmanagementsystem.controller;
 
 import com.lama.loanmanagementsystem.model.employeeMaster;
+import com.lama.loanmanagementsystem.model.itemMaster;
 import com.lama.loanmanagementsystem.repository.employeeMasterRepository;
+import com.lama.loanmanagementsystem.repository.itemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +17,7 @@ import java.util.Optional;
 public class EmployeeMasterController {
     @Autowired
     private employeeMasterRepository empRep;
-
+    private itemRepository itemRep;
     @GetMapping("/employees")
     public List<employeeMaster> getAllEmployees(){
         return empRep.findAll();
@@ -30,6 +32,23 @@ public class EmployeeMasterController {
             return new ResponseEntity<>("Employee not found", HttpStatus.OK);
         }
     }
+    @PostMapping("/employees/{id}/items")
+    public ResponseEntity<?> createItem(@PathVariable(value = "id") String employeeId,@RequestBody itemMaster item){
+        Optional<employeeMaster> employee = empRep.findById(employeeId);
+        if(employee.isEmpty()){
+            return new ResponseEntity<>("employee not found",HttpStatus.OK);
+        }
+        else{
+            List<itemMaster> items = employee.get().getItems();
+            items.add(item);
+            employee.get().setItems(items);
+            empRep.save(employee.get());
+//            item.setEmployeeId(employee.get());
+//            itemRep.save(item);
+            return new ResponseEntity<>(employee.get(),HttpStatus.OK);
+        }
+    }
+
     @PostMapping("/employees")
     public ResponseEntity<?> createEmployee(@RequestBody employeeMaster employee){
 //        return empRep.save(employee);
@@ -47,6 +66,7 @@ public class EmployeeMasterController {
             employee.get().setEmployeeDOJ(emp.getEmployeeDOJ());
             employee.get().setEmployeeDesignation(emp.getEmployeeDesignation());
             employee.get().setGender(emp.getGender());
+            empRep.save(emp);
             return new ResponseEntity<>(employee,HttpStatus.OK);
         }
     }

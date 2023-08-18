@@ -30,8 +30,9 @@ public class itemMaster {
     private String itemCategory;
     private Integer itemValuation;
 
-    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER,optional = false)
+    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
     @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
+//    @JsonBackReference
     private employeeMaster employeeId;
 
 }

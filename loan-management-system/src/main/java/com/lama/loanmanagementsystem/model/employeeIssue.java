@@ -1,5 +1,6 @@
 package com.lama.loanmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -24,12 +25,16 @@ public class employeeIssue {
     )
     @Column(name = "issue_id")
     private String issueId ;
-    private String itemId;
+//    private String itemId;
     @Column(nullable = false)
     private String employeeId;
     @Column(nullable = false)
     private Date issueDate;
     @Column(nullable = false)
     private Date returnDate;
+    @JsonBackReference
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "itemId", referencedColumnName = "item_id")
+    private itemMaster itemId;
 
 }

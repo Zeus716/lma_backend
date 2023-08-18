@@ -25,7 +25,19 @@ public class itemController {
     public ResponseEntity<?>  createItems(@RequestBody itemMaster item){
         return new ResponseEntity<>(itemrep.save(item),HttpStatus.OK);
     }
-
+    @PutMapping("/items/{item_id}/employee")
+    public ResponseEntity<?> addEmployeeToItem(@PathVariable(value = "item_id") String itemId,@RequestBody employeeMaster employee){
+        Optional<itemMaster> item = itemrep.findById(itemId);
+        if(item.isEmpty()){
+            return new ResponseEntity<>("item not found",HttpStatus.OK);
+        }
+        else{
+            itemMaster item1 = item.get();
+            item1.setEmployeeId(employee);
+            itemrep.save(item1);
+            return new ResponseEntity<>(item1,HttpStatus.OK);
+        }
+    }
     @GetMapping("/items/{emp_id}")
     public ResponseEntity<?> getItemsByempId(@PathVariable(value = "emp_id") String empId){
         return new ResponseEntity<>(itemrep.findByEmployeeId_EmployeeId(empId),HttpStatus.OK);
@@ -34,11 +46,11 @@ public class itemController {
     public ResponseEntity<?> deleteItem(@PathVariable(value = "item_id") String itemId){
         Optional<itemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
-            return new ResponseEntity<>("employee not found",HttpStatus.OK);
+            return new ResponseEntity<>("item not found",HttpStatus.OK);
         }
         else{
             item.ifPresent(itemrep::delete);
-            return new ResponseEntity<>("employee deleted",HttpStatus.OK);
+            return new ResponseEntity<>("item deleted",HttpStatus.OK);
         }
     }
 }
