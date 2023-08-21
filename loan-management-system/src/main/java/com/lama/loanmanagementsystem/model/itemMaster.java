@@ -1,6 +1,7 @@
 package com.lama.loanmanagementsystem.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -30,12 +31,14 @@ public class itemMaster {
     private String itemMake;
     private String itemCategory;
     private Integer itemValuation;
-
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee")
+    @JsonIgnore
+    private employeeMaster employee;
 //    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
 //    @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
 //    @JsonBackReference
 //    private employeeMaster employeeId;
-    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "itemId")
-    private Set<employeeIssue> issue;
+
 
 }

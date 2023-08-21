@@ -37,8 +37,9 @@ public class employeeIssue {
     @Column(nullable = false)
     private Date returnDate;
 //    @JsonBackReference
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "itemId", referencedColumnName = "item_id")
-    private itemMaster itemId;
+//    @OneToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+//    @JoinColumn(name = "itemId")
+//    @JsonIgnore
+//    private itemMaster itemId;
 
 }
