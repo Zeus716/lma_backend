@@ -13,6 +13,8 @@ import java.util.Optional;
 
 @RequestMapping
 @RestController
+@CrossOrigin("*")
+
 public class itemController {
     @Autowired
     private itemRepository itemrep ;

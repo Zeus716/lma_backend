@@ -18,6 +18,8 @@ import java.util.Optional;
 
 @RequestMapping
 @RestController
+@CrossOrigin("*")
+
 public class issueController {
     @Autowired
     private issueRepository issueRep;
