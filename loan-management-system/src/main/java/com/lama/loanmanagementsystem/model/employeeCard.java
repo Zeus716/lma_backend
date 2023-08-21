@@ -1,19 +1,31 @@
 package com.lama.loanmanagementsystem.model;
 
-import lombok.Data;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table
+@Table(name = "employeeCard")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class employeeCard {
     @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
     private String employeeId;
-    private String loanId;
     private Date issueDate;
-    private char approvalStatus;
+
+//    @Column(columnDefinition = "character default F")
+    private char approvalStatus = 'F';
+
+//    @ManyToOne(cascade = CascadeType.ALL)
+
 
 }

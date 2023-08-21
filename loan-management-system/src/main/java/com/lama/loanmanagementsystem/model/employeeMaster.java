@@ -1,14 +1,24 @@
 package com.lama.loanmanagementsystem.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
+@Getter
 @Table(name = "employeeMaster")
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class employeeMaster {
     @Id
     @GeneratedValue(generator = "UUID")
@@ -16,54 +26,17 @@ public class employeeMaster {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-    private String employeeId;
-
-    @Getter
+    private String employeeId ;
     private String employeeName;
-    @Getter
     private String employeeDesignation;
-    @Getter
     private Date employeeDOJ;
-    @Getter
     private Date employeeDOB;
-    @Getter
     private String gender;
-
-    public employeeMaster() {
-    }
-
-    public employeeMaster(String employeeName, String employeeDesignation, Date employeeDOJ, Date employeeDOB, String gender) {
-        this.employeeName = employeeName;
-        this.employeeDesignation = employeeDesignation;
-        this.employeeDOJ = employeeDOJ;
-        this.employeeDOB = employeeDOB;
-        this.gender = gender;
-    }
-
-    public void setEmployeeName(String employeeName) {
-        this.employeeName = employeeName;
-    }
-
-    public void setEmployeeDesignation(String employeeDesignation) {
-        this.employeeDesignation = employeeDesignation;
-    }
-
-    public void setEmployeeDOJ(Date employeeDOJ) {
-        this.employeeDOJ = employeeDOJ;
-    }
-
-    public void setEmployeeDOB(Date employeeDOB) {
-        this.employeeDOB = employeeDOB;
-    }
-
-    public void setGender(String gender) {
-        this.gender = gender;
-    }
-
-
-
-//    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.LAZY)
-//    Set<loanMaster> loanMasterSet;
+    private String employeeDepartment;
+////    @JsonBackReference
+//    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId",fetch = FetchType.EAGER)
+//    private List<itemMaster> items;
+//    @JsonBackReference
 
 
 }

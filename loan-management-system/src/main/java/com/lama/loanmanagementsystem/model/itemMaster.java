@@ -1,37 +1,41 @@
 package com.lama.loanmanagementsystem.model;
 
-import lombok.Getter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
+import java.util.UUID;
 
+@Getter
+//@Builder
+@Setter
 @Entity
-@Table
+@Table(name = "itemMaster")
+@AllArgsConstructor
+@NoArgsConstructor
 public class itemMaster {
     @Id
-    private String itemId;
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "item_id")
+    private String itemId ;
     private String itemDescription;
-    private char issueStatus;
+//    @Column(columnDefinition = "default F")
+    private char issueStatus = 'F';
     private String itemMake;
     private String itemCategory;
     private Integer itemValuation;
 
+//    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
+//    @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
+//    @JsonBackReference
+//    private employeeMaster employeeId;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "itemId")
+    private Set<employeeIssue> issue;
 
-//    public itemMaster(String itemDescription, char issueStatus, String itemMake, String itemCategory, Integer itemValuation, com.lama.loanmanagementsystem.model.employeeIssue employeeIssue) {
-//        this.itemDescription = itemDescription;
-//        this.issueStatus = issueStatus;
-//        this.itemMake = itemMake;
-//        this.itemCategory = itemCategory;
-//        this.itemValuation = itemValuation;
-//        this.employeeIssue = employeeIssue;
-//    }
-
-//    @OneToOne(cascade = CascadeType.ALL, optional = false, orphanRemoval = true)
-//    @JoinTable(name = "itemMaster_employeeIssue",
-//            joinColumns = @JoinColumn(name = "itemMaster_itemId"),
-//            inverseJoinColumns = @JoinColumn(name = "employeeIssue_issueId"))
-//    private employeeIssue employeeIssue;
-
-
-    public itemMaster() {
-    }
 }
