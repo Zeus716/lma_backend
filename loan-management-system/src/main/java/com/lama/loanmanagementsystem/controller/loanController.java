@@ -46,6 +46,7 @@ public class loanController {
             if(!loan.getDurationInMonths().equals(0)){
                 loanexists.get().setDurationInMonths(loan.getDurationInMonths());
             }
+            loanRep.save(loanexists.get());
             return new ResponseEntity<>(loanexists,HttpStatus.OK);
         }
     }
