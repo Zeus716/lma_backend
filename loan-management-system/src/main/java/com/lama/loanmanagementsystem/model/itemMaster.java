@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.Set;
 import java.util.UUID;
 
 @Getter
@@ -25,14 +26,16 @@ public class itemMaster {
     private String itemId ;
     private String itemDescription;
 //    @Column(columnDefinition = "default F")
-    private char issueStatus;
+    private char issueStatus = 'F';
     private String itemMake;
     private String itemCategory;
     private Integer itemValuation;
 
-    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
-    @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
+//    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
+//    @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
 //    @JsonBackReference
-    private employeeMaster employeeId;
+//    private employeeMaster employeeId;
+    @OneToMany(cascade = CascadeType.ALL,fetch = FetchType.EAGER,mappedBy = "itemId")
+    private Set<employeeIssue> issue;
 
 }

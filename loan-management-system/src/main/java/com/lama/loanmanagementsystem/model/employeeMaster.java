@@ -26,7 +26,6 @@ public class employeeMaster {
             name = "UUID",
             strategy = "org.hibernate.id.UUIDGenerator"
     )
-//    @Transient
     private String employeeId ;
     private String employeeName;
     private String employeeDesignation;
@@ -34,9 +33,10 @@ public class employeeMaster {
     private Date employeeDOB;
     private String gender;
     private String employeeDepartment;
+////    @JsonBackReference
+//    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId",fetch = FetchType.EAGER)
+//    private List<itemMaster> items;
 //    @JsonBackReference
-    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId")
-    private List<itemMaster> items;
 
 
 }

@@ -1,7 +1,10 @@
 package com.lama.loanmanagementsystem.controller;
 
 import com.lama.loanmanagementsystem.model.employeeIssue;
+import com.lama.loanmanagementsystem.model.employeeMaster;
+import com.lama.loanmanagementsystem.repository.employeeMasterRepository;
 import com.lama.loanmanagementsystem.repository.issueRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,7 +19,11 @@ import java.util.Optional;
 @RequestMapping
 @RestController
 public class issueController {
+    @Autowired
     private issueRepository issueRep;
+    @Autowired
+    private employeeMasterRepository empRep;
+
     @GetMapping("/issues")
     public ResponseEntity<?> getAllIssues(){
         return new ResponseEntity<>(issueRep.findAll(), HttpStatus.OK);
@@ -34,9 +41,21 @@ public class issueController {
         }
 
     }
-    @PostMapping("/issues")
-    public ResponseEntity<?> createIssue(@RequestBody employeeIssue issue){
-        return new ResponseEntity<>(issueRep.save(issue),HttpStatus.OK);
+//    @PostMapping("/issues")
+//    public ResponseEntity<?> createIssue(@RequestBody employeeIssue issue){
+//        return new ResponseEntity<>(issueRep.save(issue),HttpStatus.OK);
+//    }
+    @PostMapping("employees/{id}/issues")
+    public ResponseEntity<?> createIssue(@PathVariable(value = "id") String employeeId, @RequestBody employeeIssue issue){
+        Optional<employeeMaster> employee = empRep.findById(employeeId);
+        if(employee.isPresent()){
+            issue.setEmployeeId(employee.get());
+            issueRep.save(issue);
+            return new ResponseEntity<>(issue,HttpStatus.OK);
+        }
+        else{
+            return new ResponseEntity<>("employee not present",HttpStatus.OK);
+        }
     }
     @PutMapping("/issues/{id}")
     public ResponseEntity<?> updateIssue(@PathVariable(value = "id") String issueId, @RequestBody employeeIssue issue){
