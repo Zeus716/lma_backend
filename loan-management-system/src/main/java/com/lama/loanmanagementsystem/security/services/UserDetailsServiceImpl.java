@@ -1,0 +1,26 @@
+package com.lama.loanmanagementsystem.security.services;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.lama.loanmanagementsystem.model.userData;
+
+@Service
+public class UserDetailsServiceImpl implements UserDetailsService {
+  @Autowired
+  com.lama.loanmanagementsystem.repository.userRepository userRepository;
+
+  @Override
+  @Transactional
+  public UserDetails loadUserByUsername(String id) throws UsernameNotFoundException {
+    userData user = userRepository.findById(id)
+        .orElseThrow(() -> new UsernameNotFoundException("User Not Found with id: " + id));
+
+    return UserDetailsImpl.build(user);
+  }
+
+}
