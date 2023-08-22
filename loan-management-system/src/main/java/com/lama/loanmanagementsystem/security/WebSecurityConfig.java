@@ -60,10 +60,10 @@ public class WebSecurityConfig { // extends WebSecurityConfigurerAdapter {
 
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-		http.csrf(csrf -> csrf.disable())
+		http.cors().and().csrf(csrf -> csrf.disable())
 				.exceptionHandling(exception -> exception.authenticationEntryPoint(unauthorizedHandler))
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-				.authorizeHttpRequests(auth -> auth.antMatchers("/**").permitAll()
+				.authorizeHttpRequests(auth -> auth.antMatchers("/users").permitAll()
 						.antMatchers("api/**").permitAll().anyRequest().authenticated());
 
 		http.authenticationProvider(authenticationProvider());
