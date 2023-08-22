@@ -18,6 +18,8 @@ import java.util.UUID;
 
 @RequestMapping
 @RestController
+@CrossOrigin("*")
+
 public class loanController {
     @Autowired
     public loanRepository loanRep;

@@ -38,6 +38,8 @@ import com.lama.loanmanagementsystem.payload.response.MessageResponse;
 
 @RequestMapping
 @RestController
+@CrossOrigin("*")
+
 public class userController {
 	@Autowired
 	AuthenticationManager authenticationManager;

@@ -17,6 +17,8 @@ import java.util.Optional;
 
 @RequestMapping
 @RestController
+@CrossOrigin("*")
+
 public class itemController {
     @Getter
     @Autowired

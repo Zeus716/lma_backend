@@ -17,6 +17,8 @@ import java.util.Set;
 
 @RestController
 @RequestMapping
+@CrossOrigin("*")
+
 public class EmployeeMasterController {
     @Autowired
     private employeeMasterRepository empRep;
