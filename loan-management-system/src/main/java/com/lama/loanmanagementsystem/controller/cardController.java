@@ -12,6 +12,8 @@ import java.awt.font.OpenType;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin("*")
+
 @RequestMapping()
 public class cardController {
 
