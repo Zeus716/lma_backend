@@ -1,7 +1,11 @@
 package com.lama.loanmanagementsystem.controller;
 
+import com.lama.loanmanagementsystem.model.employeeMaster;
 import com.lama.loanmanagementsystem.model.loanMaster;
+import com.lama.loanmanagementsystem.model.loanType;
+import com.lama.loanmanagementsystem.repository.employeeMasterRepository;
 import com.lama.loanmanagementsystem.repository.loanRepository;
+import com.lama.loanmanagementsystem.repository.loanTypeRepository;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +21,10 @@ import java.util.UUID;
 public class loanController {
     @Autowired
     public loanRepository loanRep;
+    @Autowired
+    public employeeMasterRepository empRep;
+    @Autowired
+    public loanTypeRepository loanTypeRep;
 
     @GetMapping("/loans/{id}")
     public ResponseEntity<?> getLoans(@PathVariable(value = "id") String loan_id) {
@@ -32,24 +40,42 @@ public class loanController {
         return new ResponseEntity<>(createdLoan,HttpStatus.OK);
 //         return loanRep.save(loan);
     }
-    @PutMapping("/loans/{id}") // resets values if not provided nned to fix
-    public ResponseEntity<?> updateLoans(@PathVariable(value="id") String loan_id,
+
+    @PutMapping("/loans/{id}/employees/{employee_id}") // resets values if not provided nned to fix
+    public ResponseEntity<?> updateLoans(@PathVariable(value="id") String loan_id,@PathVariable(value = "employee_id")String employeeId,
                                          @RequestBody loanMaster loan){
         Optional<loanMaster> loanexists = loanRep.findById(loan_id);
         if (loanexists.isEmpty()) {
             return new ResponseEntity<>("loan id not found",HttpStatus.OK);
         }
         else{
-            if(!loan.getLoanType().isEmpty()){
-                loanexists.get().setLoanType(loan.getLoanType());
+            Optional<employeeMaster> employee =empRep.findById(employeeId);
+            if(employee.isEmpty()){
+                return new ResponseEntity<>("employee id not found",HttpStatus.OK);
             }
-            if(!loan.getDurationInMonths().equals(0)){
-                loanexists.get().setDurationInMonths(loan.getDurationInMonths());
-            }
+            loanexists.get().setEmployee(employee.get());
             loanRep.save(loanexists.get());
             return new ResponseEntity<>(loanexists,HttpStatus.OK);
         }
     }
+    @PutMapping("/loans/{id}/loanType/{loanType_id}") // resets values if not provided nned to fix
+    public ResponseEntity<?> updateLoansLoanType(@PathVariable(value="id") String loan_id,@PathVariable(value = "loanType_id")String loanTypeId,
+                                         @RequestBody loanMaster loan){
+        Optional<loanMaster> loanexists = loanRep.findById(loan_id);
+        if (loanexists.isEmpty()) {
+            return new ResponseEntity<>("loan id not found",HttpStatus.OK);
+        }
+        else{
+            Optional<loanType> loanType =loanTypeRep.findById(loanTypeId);
+            if(loanType.isEmpty()){
+                return new ResponseEntity<>("loan not found",HttpStatus.OK);
+            }
+            loanexists.get().setLoanType(loanType.get());
+            loanRep.save(loanexists.get());
+            return new ResponseEntity<>(loanexists,HttpStatus.OK);
+        }
+    }
+
     @GetMapping("/loans")
     public ResponseEntity<?> getAllLoans(){
         return new ResponseEntity<>(loanRep.findAll(),HttpStatus.OK);

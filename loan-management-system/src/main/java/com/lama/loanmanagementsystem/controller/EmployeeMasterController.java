@@ -1,10 +1,10 @@
 package com.lama.loanmanagementsystem.controller;
 
-import com.lama.loanmanagementsystem.model.employeeIssue;
+//import com.lama.loanmanagementsystem.model.employeeIssue;
 import com.lama.loanmanagementsystem.model.employeeMaster;
 import com.lama.loanmanagementsystem.model.itemMaster;
 import com.lama.loanmanagementsystem.repository.employeeMasterRepository;
-import com.lama.loanmanagementsystem.repository.issueRepository;
+//import com.lama.loanmanagementsystem.repository.issueRepository;
 import com.lama.loanmanagementsystem.repository.itemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,8 +22,8 @@ public class EmployeeMasterController {
     private employeeMasterRepository empRep;
     @Autowired
     private itemRepository itemRep;
-    @Autowired
-    private issueRepository issueRep;
+//    @Autowired
+//    private issueRepository issueRep;
     @GetMapping("/employees")
     public List<employeeMaster> getAllEmployees(){
         return empRep.findAll();
@@ -56,10 +56,10 @@ public class EmployeeMasterController {
 //            return new ResponseEntity<>(employee.get(),HttpStatus.OK);
 //        }
 //    }
-    @GetMapping("employees/{id}/issues")
-    public ResponseEntity<?> getAllIssues(@PathVariable(value = "id")String employeeId){
-        return new ResponseEntity<>(issueRep.findByEmployeeId_EmployeeId(employeeId),HttpStatus.OK);
-    }
+//    @GetMapping("employees/{id}/issues")
+//    public ResponseEntity<?> getAllIssues(@PathVariable(value = "id")String employeeId){
+//        return new ResponseEntity<>(issueRep.findByEmployeeId_EmployeeId(employeeId),HttpStatus.OK);
+//    }
     @PostMapping("/employees")
     public ResponseEntity<?> createEmployee(@RequestBody employeeMaster employee){
 //        return empRep.save(employee);
@@ -77,8 +77,8 @@ public class EmployeeMasterController {
             employee.get().setEmployeeDOJ(emp.getEmployeeDOJ());
             employee.get().setEmployeeDesignation(emp.getEmployeeDesignation());
             employee.get().setGender(emp.getGender());
-            empRep.save(emp);
-            return new ResponseEntity<>(employee,HttpStatus.OK);
+            empRep.save(employee.get());
+            return new ResponseEntity<>(employee.get(),HttpStatus.OK);
         }
     }
     @DeleteMapping("/employees/{id}")

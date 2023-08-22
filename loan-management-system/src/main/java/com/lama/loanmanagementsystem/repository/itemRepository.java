@@ -9,4 +9,5 @@ import java.util.List;
 @Repository
 public interface itemRepository extends JpaRepository<itemMaster,String> {
     List<itemMaster> findByEmployee_EmployeeId(String empId);
+    List<itemMaster> findByIssueStatusIs(char F);
 }
