@@ -79,6 +79,7 @@ public class EmployeeMasterController {
             employee.get().setEmployeeDOJ(emp.getEmployeeDOJ());
             employee.get().setEmployeeDesignation(emp.getEmployeeDesignation());
             employee.get().setGender(emp.getGender());
+            employee.get().setEmployeeDepartment(emp.getEmployeeDepartment());
             empRep.save(employee.get());
             return new ResponseEntity<>(employee.get(),HttpStatus.OK);
         }

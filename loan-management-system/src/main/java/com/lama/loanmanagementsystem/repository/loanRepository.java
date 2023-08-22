@@ -9,4 +9,5 @@ import java.util.UUID;
 @Repository
 public interface loanRepository extends JpaRepository<loanMaster,String> {
     List<loanMaster> findByLoanType(String loanType);
+    List<loanMaster> findByEmployee_EmployeeId(String employeeId);
 }
