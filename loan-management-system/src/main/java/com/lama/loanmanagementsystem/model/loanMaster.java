@@ -23,8 +23,11 @@ public class loanMaster {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     private String loanId ;
-    private Integer durationInMonths = 0;
-    private String loanType ="def";
-
-
+//    private String employeeId;
+    @ManyToOne
+    @JoinColumn(name ="loanType")
+    private loanType loanType;
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee")
+     private employeeMaster employee;
 }
