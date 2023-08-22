@@ -24,9 +24,19 @@ public class loanMaster {
     )
     private String loanId ;
 //    private String employeeId;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name ="loanType")
     private loanType loanType;
+
+    public loanMaster(com.lama.loanmanagementsystem.model.loanType loanType, employeeMaster employee) {
+        this.loanType = loanType;
+        this.employee = employee;
+    }
+
+    public loanMaster(com.lama.loanmanagementsystem.model.loanType loanType) {
+        this.loanType = loanType;
+    }
+
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee")
      private employeeMaster employee;

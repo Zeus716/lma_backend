@@ -29,10 +29,11 @@ public class employeeMaster {
     private String employeeId ;
     private String employeeName;
     private String employeeDesignation;
+    private String employeeDepartment;
     private Date employeeDOJ;
     private Date employeeDOB;
     private String gender;
-    private String employeeDepartment;
+
 ////    @JsonBackReference
 //    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId",fetch = FetchType.EAGER)
 //    private List<itemMaster> items;
