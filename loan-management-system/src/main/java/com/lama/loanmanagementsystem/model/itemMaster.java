@@ -1,14 +1,11 @@
 package com.lama.loanmanagementsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.Set;
-import java.util.UUID;
 
 @Getter
 //@Builder
@@ -17,32 +14,35 @@ import java.util.UUID;
 @Table(name = "itemMaster")
 @AllArgsConstructor
 @NoArgsConstructor
-public class itemMaster {
+public class ItemMaster {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "shortUUIDgenerator")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "shortUUIDgenerator",
+            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
     )
     @Column(name = "item_id")
     private String itemId ;
+
     private String itemDescription;
 //    @Column(columnDefinition = "default F")
     private char issueStatus = 'F';
     private String itemMake;
     private String itemCategory;
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomDeserializer.class)
     private Date issueDate;
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomDeserializer.class)
     private Date returnDate;
     private Integer itemValuation;
+
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee")
-//    @JsonIgnore
-    private employeeMaster employee;
 
-//    @ManyToOne(cascade = {CascadeType.ALL} ,fetch = FetchType.EAGER)
-//    @JoinColumn(name = "employeeId",referencedColumnName = "employeeId")
-//    @JsonBackReference
-//    private employeeMaster employeeId;
+    private EmployeeMaster employee;
+
+
 
 
 }

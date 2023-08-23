@@ -1,13 +1,13 @@
 package com.lama.loanmanagementsystem.repository;
 
-import com.lama.loanmanagementsystem.model.itemMaster;
+import com.lama.loanmanagementsystem.model.ItemMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface itemRepository extends JpaRepository<itemMaster,String> {
-    List<itemMaster> findByEmployee_EmployeeId(String empId);
-    List<itemMaster> findByIssueStatusIs(char F);
+public interface ItemRepository extends JpaRepository<ItemMaster,String> {
+    List<ItemMaster> findByEmployee_EmployeeId(String empId);
+    List<ItemMaster> findByIssueStatusIs(char F);
 }

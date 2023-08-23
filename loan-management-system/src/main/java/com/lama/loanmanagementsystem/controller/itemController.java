@@ -1,13 +1,13 @@
 package com.lama.loanmanagementsystem.controller;
 
-import com.lama.loanmanagementsystem.model.employeeMaster;
-import com.lama.loanmanagementsystem.model.itemMaster;
-import com.lama.loanmanagementsystem.model.loanMaster;
-import com.lama.loanmanagementsystem.model.loanType;
-import com.lama.loanmanagementsystem.repository.employeeMasterRepository;
-import com.lama.loanmanagementsystem.repository.itemRepository;
-import com.lama.loanmanagementsystem.repository.loanRepository;
-import com.lama.loanmanagementsystem.repository.loanTypeRepository;
+import com.lama.loanmanagementsystem.model.EmployeeMaster;
+import com.lama.loanmanagementsystem.model.ItemMaster;
+import com.lama.loanmanagementsystem.model.LoanMaster;
+import com.lama.loanmanagementsystem.model.LoanType;
+import com.lama.loanmanagementsystem.repository.EmployeeMasterRepository;
+import com.lama.loanmanagementsystem.repository.ItemRepository;
+import com.lama.loanmanagementsystem.repository.LoanRepository;
+import com.lama.loanmanagementsystem.repository.LoanTypeRepository;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -15,40 +15,38 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 @RequestMapping
 @RestController
 @CrossOrigin("*")
 
-public class itemController {
+public class ItemController {
     @Getter
     @Autowired
-    private itemRepository itemrep ;
+    private ItemRepository itemrep ;
     @Autowired
-    private employeeMasterRepository empRep;
+    private EmployeeMasterRepository empRep;
     @Autowired
-    private loanTypeRepository loanTypeRep;
+    private LoanTypeRepository loanTypeRep;
     @Autowired
-    private loanRepository loanRep;
+    private LoanRepository loanRep;
     @GetMapping("/items")
     public ResponseEntity<?> getAllItems(){
         return new ResponseEntity<>(itemrep.findAll(), HttpStatus.OK);
     }
     @PostMapping("/items")
-    public ResponseEntity<?>  createItems(@RequestBody itemMaster item){
-        Optional<loanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
+    public ResponseEntity<?>  createItems(@RequestBody ItemMaster item){
+        Optional<LoanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
         if(loans.isEmpty()){
             return new ResponseEntity<>("item category doesn't exist",HttpStatus.OK);
         }
         return new ResponseEntity<>(itemrep.save(item),HttpStatus.OK);
     }
     @PostMapping("/employees/{id}/items")
-    public ResponseEntity<?> createItemEmployee(@PathVariable(value="id") String employeeId, @RequestBody itemMaster item){
-        Optional<employeeMaster> employee = empRep.findById(employeeId);
+    public ResponseEntity<?> createItemEmployee(@PathVariable(value="id") String employeeId, @RequestBody ItemMaster item){
+        Optional<EmployeeMaster> employee = empRep.findById(employeeId);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not present",HttpStatus.OK);
         }
@@ -57,13 +55,13 @@ public class itemController {
             item.setIssueStatus('T');
             LocalDate date = LocalDate.now();
             Date today = java.sql.Date.valueOf(date);
-            Optional<loanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
+            Optional<LoanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
             if(loans.isEmpty()){
                 return new ResponseEntity<>("item category doesn't exist",HttpStatus.OK);
             }
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             item.setIssueDate(today);
-            loanMaster loan = new loanMaster(loans.get(),employee.get());
+            LoanMaster loan = new LoanMaster(loans.get(),employee.get());
             loanRep.save(loan);
 
             itemrep.save(item);
@@ -71,8 +69,8 @@ public class itemController {
         }
     }
     @PutMapping("items/{item_id}")
-    public ResponseEntity<?> updateItem(@PathVariable(value = "item_id") String itemId,@RequestBody itemMaster itemNew){
-        Optional<itemMaster> item = itemrep.findById(itemId);
+    public ResponseEntity<?> updateItem(@PathVariable(value = "item_id") String itemId,@RequestBody ItemMaster itemNew){
+        Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not present",HttpStatus.OK);
         }
@@ -91,14 +89,14 @@ public class itemController {
 
     @PutMapping("/items/{item_id}/employees/{employee_id}")
     public ResponseEntity<?> updateItemEmployee(@PathVariable(value = "item_id") String itemId, @PathVariable(value = "employee_id") String employeeId){
-        Optional<itemMaster> item = itemrep.findById(itemId);
+        Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not present",HttpStatus.OK);
         }
 
         else{
 
-            Optional<employeeMaster> employee  =empRep.findById(employeeId);
+            Optional<EmployeeMaster> employee  =empRep.findById(employeeId);
             if(employee.isPresent()){
                 item.get().setEmployee(employee.get());
                 item.get().setIssueStatus('T');
@@ -106,13 +104,13 @@ public class itemController {
                 Date today = java.sql.Date.valueOf(date);
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //                item.get().setIssueDate(today);
-                Optional<loanType> loans =loanTypeRep.findByLoanTypeIs(item.get().getItemCategory());
+                Optional<LoanType> loans =loanTypeRep.findByLoanTypeIs(item.get().getItemCategory());
                 if(loans.isEmpty()){
                     return new ResponseEntity<>("item category doesn't exist",HttpStatus.OK);
                 }
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 item.get().setIssueDate(today);
-                loanMaster loan = new loanMaster(loans.get(),employee.get());
+                LoanMaster loan = new LoanMaster(loans.get(),employee.get());
                 loanRep.save(loan);
                 itemrep.save(item.get());
                 return new ResponseEntity<>(item.get(),HttpStatus.OK);
@@ -130,7 +128,7 @@ public class itemController {
     }
     @GetMapping("employees/{id}/items")
     public ResponseEntity<?> getAllItemsofEmployee(@PathVariable(value = "id")String employeeId){
-        Optional<employeeMaster> employee =empRep.findById(employeeId);
+        Optional<EmployeeMaster> employee =empRep.findById(employeeId);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not present",HttpStatus.OK);
         }
@@ -158,7 +156,7 @@ public class itemController {
 //    }
     @DeleteMapping("/items/{item_id}")
     public ResponseEntity<?> deleteItem(@PathVariable(value = "item_id") String itemId){
-        Optional<itemMaster> item = itemrep.findById(itemId);
+        Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not found",HttpStatus.OK);
         }

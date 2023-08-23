@@ -7,7 +7,6 @@ import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Table(name = "loanMaster")
@@ -15,29 +14,29 @@ import java.util.UUID;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class loanMaster {
+public class LoanMaster {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "shortUUIDgenerator")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "shortUUIDgenerator",
+            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
     )
     private String loanId ;
 //    private String employeeId;
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name ="loanType")
-    private loanType loanType;
+    private LoanType loanType;
 
-    public loanMaster(com.lama.loanmanagementsystem.model.loanType loanType, employeeMaster employee) {
+    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @JoinColumn(name = "employee")
+     private EmployeeMaster employee;
+
+    public LoanMaster(LoanType loanType, EmployeeMaster employee) {
         this.loanType = loanType;
         this.employee = employee;
     }
 
-    public loanMaster(com.lama.loanmanagementsystem.model.loanType loanType) {
+    public LoanMaster(LoanType loanType) {
         this.loanType = loanType;
     }
-
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
-    @JoinColumn(name = "employee")
-     private employeeMaster employee;
 }

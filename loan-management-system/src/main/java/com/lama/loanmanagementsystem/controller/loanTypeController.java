@@ -1,9 +1,7 @@
 package com.lama.loanmanagementsystem.controller;
 
-import com.lama.loanmanagementsystem.model.employeeCard;
-import com.lama.loanmanagementsystem.model.loanType;
-import com.lama.loanmanagementsystem.repository.cardRepository;
-import com.lama.loanmanagementsystem.repository.loanTypeRepository;
+import com.lama.loanmanagementsystem.model.LoanType;
+import com.lama.loanmanagementsystem.repository.LoanTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,12 +11,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping()
 @CrossOrigin("*")
-public class loanTypeController {
 
-
+//checked all working
+public class LoanTypeController {
 
     @Autowired
-    private loanTypeRepository cardRep;
+    private LoanTypeRepository cardRep;
 
     @GetMapping("/loantypes")
     public ResponseEntity<?> getAllLoans() {
@@ -27,7 +25,7 @@ public class loanTypeController {
 
     @GetMapping("/loantypes/{id}")
     public ResponseEntity<?> getLoanById(@PathVariable(value = "id") String id) {
-        Optional<loanType> card = cardRep.findById(id);
+        Optional<LoanType> card = cardRep.findById(id);
         if (card.isPresent()) {
             return new ResponseEntity<>(cardRep.findById(id), HttpStatus.OK);
         } else {
@@ -37,18 +35,19 @@ public class loanTypeController {
     }
 
     @PostMapping("/loantypes")
-    public ResponseEntity<?> createLoan(@RequestBody loanType card) {
+    public ResponseEntity<?> createLoan(@RequestBody LoanType card) {
         return new ResponseEntity<>(cardRep.save(card), HttpStatus.OK);
     }
 
 
     @PutMapping("/loantypes/{id}")
-    public ResponseEntity<?> updateLoan(@PathVariable(value = "id") String id, @RequestBody loanType card) {
-        Optional<loanType> empCard = cardRep.findById(id);
+    public ResponseEntity<?> updateLoan(@PathVariable(value = "id") String id, @RequestBody LoanType card) {
+        Optional<LoanType> empCard = cardRep.findById(id);
         if (empCard.isPresent()) {
             empCard.get().setDurationInMonths(card.getDurationInMonths());
-            cardRep.save(card);
-            return new ResponseEntity<>("card saved", HttpStatus.OK);
+            empCard.get().setLoanType(card.getLoanType());
+            cardRep.save(empCard.get());
+            return new ResponseEntity<>(empCard.get(), HttpStatus.OK);
         } else {
             return new ResponseEntity<>("card not found", HttpStatus.OK);
         }
@@ -56,7 +55,7 @@ public class loanTypeController {
 
     @DeleteMapping("/loantypes/{id}")
     public ResponseEntity<?> deleteLoan(@PathVariable(value = "id") String id) {
-        Optional<loanType> empCard = cardRep.findById(id);
+        Optional<LoanType> empCard = cardRep.findById(id);
         if (empCard.isPresent()) {
             empCard.ifPresent(cardRep::delete);
             return new ResponseEntity<>("card deleted", HttpStatus.OK);

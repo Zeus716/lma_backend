@@ -10,7 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.lama.loanmanagementsystem.model.userData;
+import com.lama.loanmanagementsystem.model.UserData;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -34,7 +34,7 @@ public class UserDetailsImpl implements UserDetails {
 	    this.authorities = authorities;
 	  }
 
-	  public static UserDetailsImpl build(userData user) {
+	  public static UserDetailsImpl build(UserData user) {
 	    List<GrantedAuthority> authorities = user.getRoles().stream()
 	        .map(role -> new SimpleGrantedAuthority(role.getName().name()))
 	        .collect(Collectors.toList());

@@ -1,8 +1,8 @@
 package com.lama.loanmanagementsystem.controller;
 
-import com.lama.loanmanagementsystem.model.userData;
+import com.lama.loanmanagementsystem.model.UserData;
 import com.lama.loanmanagementsystem.repository.RoleRepository;
-import com.lama.loanmanagementsystem.repository.userRepository;
+import com.lama.loanmanagementsystem.repository.UserRepository;
 import com.lama.loanmanagementsystem.security.jwt.JwtUtils;
 import com.lama.loanmanagementsystem.security.services.UserDetailsImpl;
 import com.lama.loanmanagementsystem.model.ERole;
@@ -40,7 +40,7 @@ import com.lama.loanmanagementsystem.payload.response.MessageResponse;
 @RestController
 @CrossOrigin("*")
 
-public class userController {
+public class UserController {
 	@Autowired
 	AuthenticationManager authenticationManager;
 	
@@ -54,10 +54,10 @@ public class userController {
 	JwtUtils jwtUtils;
 
     @Autowired
-    private userRepository userrep;
+    private UserRepository userrep;
     @GetMapping("/users/{id}")
     public ResponseEntity<?> getUser(@PathVariable(value="id") String employeeId){
-        Optional<userData> user = userrep.findById(employeeId);
+        Optional<UserData> user = userrep.findById(employeeId);
         if(user.isPresent()) {
             return new ResponseEntity<>(user, HttpStatus.OK);
         }
@@ -65,14 +65,14 @@ public class userController {
     }
 
     @GetMapping("/users")
-    public List<userData> getUsers() {
+    public List<UserData> getUsers() {
         return userrep.findAll();
     }
 
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@Validated @RequestBody SignupRequest signUpRequest){
 		// Create new user's account
-		userData user = new userData(encoder.encode(signUpRequest.getPassword()));
+		UserData user = new UserData(encoder.encode(signUpRequest.getPassword()));
 
 		System.out.println(user.getEmployeeId());
 		Set<String> strRoles = signUpRequest.getRole();
@@ -107,8 +107,8 @@ public class userController {
     @Transactional
     @PutMapping("/users/{id}")
     public ResponseEntity<String> updateUser( @PathVariable(value = "id") String employee_id,
-                                              @RequestBody userData user){
-        Optional<userData> exists = userrep.findById(employee_id);
+                                              @RequestBody UserData user){
+        Optional<UserData> exists = userrep.findById(employee_id);
         if(exists.isEmpty()){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
         }

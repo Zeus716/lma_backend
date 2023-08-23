@@ -1,6 +1,6 @@
 package com.lama.loanmanagementsystem.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,9 +9,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -19,25 +16,38 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class employeeMaster {
+public class EmployeeMaster {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "shortUUIDgenerator")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "shortUUIDgenerator",
+            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
     )
+    @Column(name = "employee_id")
     private String employeeId ;
+
+    @Column(name = "employee_name")
     private String employeeName;
+
+    @Column(name = "employee_designation")
     private String employeeDesignation;
+
+    @Column(name = "employee_department")
     private String employeeDepartment;
+
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomDeserializer.class)
+    @Column(name = "employee_DOJ")
     private Date employeeDOJ;
+
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomDeserializer.class)
+    @Column(name= "employee_DOB")
     private Date employeeDOB;
+
+    @Column(name = "gender")
     private String gender;
 
-////    @JsonBackReference
-//    @OneToMany(cascade = CascadeType.ALL,orphanRemoval = true,mappedBy = "employeeId",fetch = FetchType.EAGER)
-//    private List<itemMaster> items;
-//    @JsonBackReference
 
 
 }
