@@ -1,7 +1,6 @@
 package com.lama.loanmanagementsystem.model;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -14,13 +13,8 @@ import javax.persistence.*;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class userData {
+public class UserData {
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
-    )
     private String employeeId;
     private String password;
 
@@ -28,7 +22,7 @@ public class userData {
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
     
-    public userData(String password) {
+    public UserData(String password) {
     	this.password = password;
     }
 }

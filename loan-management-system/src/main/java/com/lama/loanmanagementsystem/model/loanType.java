@@ -6,10 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "loanType")
@@ -17,17 +14,20 @@ import javax.persistence.Table;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class loanType {
+public class LoanType {
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "shortUUIDgenerator")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "shortUUIDgenerator",
+            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
     )
+    @Column(name = "loan_id")
     private String loanId ;
-//
+
+    @Column(name = "loan_type")
     private String loanType;
 
+    @Column(name = "duration_in_months")
     private Integer durationInMonths;
 
 }

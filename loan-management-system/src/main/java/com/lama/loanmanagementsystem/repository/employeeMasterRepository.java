@@ -1,11 +1,11 @@
 package com.lama.loanmanagementsystem.repository;
 
-import com.lama.loanmanagementsystem.model.employeeMaster;
+import com.lama.loanmanagementsystem.model.EmployeeMaster;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface employeeMasterRepository extends JpaRepository<employeeMaster, String> {
+public interface EmployeeMasterRepository extends JpaRepository<EmployeeMaster, String> {
 
 
 }
