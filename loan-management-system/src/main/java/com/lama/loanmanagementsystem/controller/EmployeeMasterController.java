@@ -1,17 +1,26 @@
 package com.lama.loanmanagementsystem.controller;
 
+import com.lama.loanmanagementsystem.model.ERole;
 //import com.lama.loanmanagementsystem.model.employeeIssue;
 import com.lama.loanmanagementsystem.model.EmployeeMaster;
+import com.lama.loanmanagementsystem.model.Role;
+import com.lama.loanmanagementsystem.model.UserData;
 import com.lama.loanmanagementsystem.repository.EmployeeMasterRepository;
 //import com.lama.loanmanagementsystem.repository.issueRepository;
 import com.lama.loanmanagementsystem.repository.ItemRepository;
+import com.lama.loanmanagementsystem.repository.RoleRepository;
+import com.lama.loanmanagementsystem.repository.UserRepository;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @RestController
 @RequestMapping
@@ -22,6 +31,15 @@ public class EmployeeMasterController {
     private EmployeeMasterRepository empRep;
     @Autowired
     private ItemRepository itemRep;
+    
+    @Autowired
+    private UserRepository userRep;
+    
+    @Autowired
+    private RoleRepository roleRep;
+    
+    @Autowired
+	PasswordEncoder encoder;
 
     @GetMapping("/employees")
     public List<EmployeeMaster> getAllEmployees(){
@@ -43,8 +61,14 @@ public class EmployeeMasterController {
 
     @PostMapping("/employees")
     public ResponseEntity<?> createEmployee(@RequestBody EmployeeMaster employee){
+    	empRep.save(employee);
+    	Set<Role> roles = new HashSet();
+    	Optional<Role> userRole = roleRep.findByName(ERole.ROLE_USER);
+    	roles.add(userRole.get());
+    	UserData user = new UserData(employee.getEmployeeId(), encoder.encode("abcd"), roles);
+    	userRep.save(user);
 //        return empRep.save(employee);
-        return  new ResponseEntity<>(empRep.save(employee),HttpStatus.OK);
+        return  new ResponseEntity<>(employee, HttpStatus.OK);
     }
 
 
