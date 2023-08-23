@@ -22,7 +22,8 @@ public class UserData {
 	@JoinTable(name = "user_roles", joinColumns = @JoinColumn(name = "employee_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
 	private Set<Role> roles = new HashSet<>();
     
-    public UserData(String password) {
+    public UserData(String id, String password) {
     	this.password = password;
+    	this.employeeId = id;
     }
 }

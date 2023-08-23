@@ -72,9 +72,8 @@ public class UserController {
     @PostMapping("/users")
     public ResponseEntity<?> createUser(@Validated @RequestBody SignupRequest signUpRequest){
 		// Create new user's account
-		UserData user = new UserData(encoder.encode(signUpRequest.getPassword()));
+		UserData user = new UserData(signUpRequest.getId(), encoder.encode(signUpRequest.getPassword()));
 
-		System.out.println(user.getEmployeeId());
 		Set<String> strRoles = signUpRequest.getRole();
 		Set<Role> roles = new HashSet<>();
 

@@ -13,7 +13,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class SignupRequest {
 	private Set<String> role;
-
+	private String id;
 	private String password;
 	
 	SignupRequest(String password) {
