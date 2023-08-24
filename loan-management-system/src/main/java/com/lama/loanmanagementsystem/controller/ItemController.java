@@ -12,9 +12,14 @@ import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
 
@@ -32,20 +37,25 @@ public class ItemController {
     private LoanTypeRepository loanTypeRep;
     @Autowired
     private LoanRepository loanRep;
+
+
     @GetMapping("/items")
     public ResponseEntity<?> getAllItems(){
         return new ResponseEntity<>(itemrep.findAll(), HttpStatus.OK);
     }
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/items")
-    public ResponseEntity<?>  createItems(@RequestBody ItemMaster item){
+    public ResponseEntity<?>  createItems(@Valid @RequestBody ItemMaster item){
         Optional<LoanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
         if(loans.isEmpty()){
             return new ResponseEntity<>("item category doesn't exist",HttpStatus.OK);
         }
         return new ResponseEntity<>(itemrep.save(item),HttpStatus.OK);
     }
+
     @PostMapping("/employees/{id}/items")
-    public ResponseEntity<?> createItemEmployee(@PathVariable(value="id") String employeeId, @RequestBody ItemMaster item){
+    public ResponseEntity<?> createItemEmployee(@Valid @PathVariable(value="id") String employeeId,
+                                                @Valid @RequestBody ItemMaster item) throws ParseException {
         Optional<EmployeeMaster> employee = empRep.findById(employeeId);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not present",HttpStatus.OK);
@@ -61,15 +71,22 @@ public class ItemController {
             }
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
             item.setIssueDate(today);
+            Integer numMonths = loans.get().getDurationInMonths();
+            LocalDate returnDate = LocalDate.now().plusMonths(numMonths);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+            String formatted = returnDate.format(formatter);
+            Date finalDate = new SimpleDateFormat("yyyy-MM-dd").parse(formatted);
+            item.setReturnDate(finalDate);
             LoanMaster loan = new LoanMaster(loans.get(),employee.get());
+//            LoanMaster loan = new LoanMaster(item.getItemId(),loans.get(),employee.get());
             loanRep.save(loan);
-
             itemrep.save(item);
             return new ResponseEntity<>(item,HttpStatus.OK);
         }
     }
     @PutMapping("items/{item_id}")
-    public ResponseEntity<?> updateItem(@PathVariable(value = "item_id") String itemId,@RequestBody ItemMaster itemNew){
+    public ResponseEntity<?> updateItem(@PathVariable(value = "item_id") @Valid String itemId,
+                                        @Valid @RequestBody ItemMaster itemNew){
         Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not present",HttpStatus.OK);
@@ -82,13 +99,15 @@ public class ItemController {
             item.get().setItemValuation(itemNew.getItemValuation());
             item.get().setIssueDate(itemNew.getIssueDate());
             item.get().setReturnDate(itemNew.getReturnDate());
+            item.get().setItemUrl(itemNew.getItemUrl());
             itemrep.save(item.get());
             return new ResponseEntity<>(item.get(),HttpStatus.OK);
         }
     }
 
     @PutMapping("/items/{item_id}/employees/{employee_id}")
-    public ResponseEntity<?> updateItemEmployee(@PathVariable(value = "item_id") String itemId, @PathVariable(value = "employee_id") String employeeId){
+    public ResponseEntity<?> updateItemEmployee(@PathVariable(value = "item_id") @Valid String itemId,
+                                                @PathVariable(value = "employee_id") @Valid String employeeId) throws ParseException {
         Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not present",HttpStatus.OK);
@@ -110,7 +129,14 @@ public class ItemController {
                 }
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 item.get().setIssueDate(today);
+                Integer numMonths = loans.get().getDurationInMonths();
+                LocalDate returnDate = LocalDate.now().plusMonths(numMonths);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                String formatted = returnDate.format(formatter);
+                Date finalDate = new SimpleDateFormat("yyyy-MM-dd").parse(formatted);
+                item.get().setReturnDate(finalDate);
                 LoanMaster loan = new LoanMaster(loans.get(),employee.get());
+//                LoanMaster loan = new LoanMaster(item.get().getItemId(),loans.get(),employee.get());
                 loanRep.save(loan);
                 itemrep.save(item.get());
                 return new ResponseEntity<>(item.get(),HttpStatus.OK);
@@ -126,8 +152,9 @@ public class ItemController {
         return new ResponseEntity<>(itemrep.findByIssueStatusIs('F'),HttpStatus.OK);
 
     }
+
     @GetMapping("employees/{id}/items")
-    public ResponseEntity<?> getAllItemsofEmployee(@PathVariable(value = "id")String employeeId){
+    public ResponseEntity<?> getAllItemsofEmployee(@PathVariable(value = "id") @Valid String employeeId){
         Optional<EmployeeMaster> employee =empRep.findById(employeeId);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not present",HttpStatus.OK);
@@ -155,12 +182,13 @@ public class ItemController {
 //        return new ResponseEntity<>(itemrep.findByEmployeeId_EmployeeId(empId),HttpStatus.OK);
 //    }
     @DeleteMapping("/items/{item_id}")
-    public ResponseEntity<?> deleteItem(@PathVariable(value = "item_id") String itemId){
+    public ResponseEntity<?> deleteItem(@PathVariable(value = "item_id") @Valid String itemId){
         Optional<ItemMaster> item = itemrep.findById(itemId);
         if(item.isEmpty()){
             return new ResponseEntity<>("item not found",HttpStatus.OK);
         }
         else{
+            item.get().setEmployee(null);
             item.ifPresent(itemrep::delete);
             return new ResponseEntity<>("item deleted",HttpStatus.OK);
         }

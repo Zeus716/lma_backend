@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.Optional;
 @RestController
 @RequestMapping()
@@ -24,7 +25,7 @@ public class LoanTypeController {
     }
 
     @GetMapping("/loantypes/{id}")
-    public ResponseEntity<?> getLoanById(@PathVariable(value = "id") String id) {
+    public ResponseEntity<?> getLoanById(@PathVariable(value = "id") @Valid String id) {
         Optional<LoanType> card = cardRep.findById(id);
         if (card.isPresent()) {
             return new ResponseEntity<>(cardRep.findById(id), HttpStatus.OK);
@@ -35,13 +36,14 @@ public class LoanTypeController {
     }
 
     @PostMapping("/loantypes")
-    public ResponseEntity<?> createLoan(@RequestBody LoanType card) {
+    public ResponseEntity<?> createLoan(@RequestBody @Valid LoanType card) {
         return new ResponseEntity<>(cardRep.save(card), HttpStatus.OK);
     }
 
 
     @PutMapping("/loantypes/{id}")
-    public ResponseEntity<?> updateLoan(@PathVariable(value = "id") String id, @RequestBody LoanType card) {
+    public ResponseEntity<?> updateLoan(@PathVariable(value = "id") @Valid String id,
+                                        @RequestBody @Valid LoanType card) {
         Optional<LoanType> empCard = cardRep.findById(id);
         if (empCard.isPresent()) {
             empCard.get().setDurationInMonths(card.getDurationInMonths());
@@ -54,7 +56,7 @@ public class LoanTypeController {
     }
 
     @DeleteMapping("/loantypes/{id}")
-    public ResponseEntity<?> deleteLoan(@PathVariable(value = "id") String id) {
+    public ResponseEntity<?> deleteLoan(@PathVariable(value = "id") @Valid String id) {
         Optional<LoanType> empCard = cardRep.findById(id);
         if (empCard.isPresent()) {
             empCard.ifPresent(cardRep::delete);

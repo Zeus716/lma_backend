@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.Date;
 @Getter
 @Table(name = "employeeMaster")
 @Setter
+@Validated
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeMaster {

@@ -3,6 +3,7 @@ package com.lama.loanmanagementsystem.model;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
 @Entity
 @Table(name = "itemMaster")
 @AllArgsConstructor
+@Validated
 @NoArgsConstructor
 public class ItemMaster {
     @Id
@@ -23,7 +25,7 @@ public class ItemMaster {
     )
     @Column(name = "item_id")
     private String itemId ;
-
+    private String itemUrl;
     private String itemDescription;
 //    @Column(columnDefinition = "default F")
     private char issueStatus = 'F';

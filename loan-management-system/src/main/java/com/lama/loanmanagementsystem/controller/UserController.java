@@ -11,6 +11,7 @@ import com.lama.loanmanagementsystem.model.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,8 @@ import com.lama.loanmanagementsystem.payload.request.SignupRequest;
 import com.lama.loanmanagementsystem.payload.response.JwtResponse;
 import com.lama.loanmanagementsystem.payload.response.MessageResponse;
 
+import javax.validation.Valid;
+
 @RequestMapping
 @RestController
 @CrossOrigin("*")
@@ -56,7 +59,7 @@ public class UserController {
     @Autowired
     private UserRepository userrep;
     @GetMapping("/users/{id}")
-    public ResponseEntity<?> getUser(@PathVariable(value="id") String employeeId){
+    public ResponseEntity<?> getUser(@PathVariable(value="id") @Valid String employeeId){
         Optional<UserData> user = userrep.findById(employeeId);
         if(user.isPresent()) {
             return new ResponseEntity<>(user, HttpStatus.OK);
@@ -68,9 +71,9 @@ public class UserController {
     public List<UserData> getUsers() {
         return userrep.findAll();
     }
-
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/users")
-    public ResponseEntity<?> createUser(@Validated @RequestBody SignupRequest signUpRequest){
+    public ResponseEntity<?> createUser(@Valid @RequestBody SignupRequest signUpRequest){
 		// Create new user's account
 		UserData user = new UserData(signUpRequest.getId(), encoder.encode(signUpRequest.getPassword()));
 
@@ -103,10 +106,12 @@ public class UserController {
 
 		return ResponseEntity.ok(new MessageResponse("User registered successfully!"));
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @Transactional
     @PutMapping("/users/{id}")
-    public ResponseEntity<String> updateUser( @PathVariable(value = "id") String employee_id,
-                                              @RequestBody UserData user){
+    public ResponseEntity<String> updateUser( @PathVariable(value = "id") @Valid String employee_id,
+                                              @RequestBody @Valid UserData user){
         Optional<UserData> exists = userrep.findById(employee_id);
         if(exists.isEmpty()){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
@@ -116,8 +121,10 @@ public class UserController {
             return new ResponseEntity<String>(String.format("User id %d updated",employee_id),HttpStatus.OK);
         }
     }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/users/{id}")
-    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") String employeeId){
+    public ResponseEntity<?> deleteUser(@PathVariable(value = "id") @Valid String employeeId){
         boolean exists = userrep.existsById(employeeId);
         if(!exists){
             return new ResponseEntity<String>("User does not exist",HttpStatus.OK);
@@ -130,7 +137,7 @@ public class UserController {
     }
     @CrossOrigin
     @PostMapping("/login")
-    public ResponseEntity<?> checkUser(@RequestBody LoginRequest loginRequest){
+    public ResponseEntity<?> checkUser(@RequestBody @Valid LoginRequest loginRequest){
     	Authentication authentication = authenticationManager.authenticate(
 				new UsernamePasswordAuthenticationToken(loginRequest.getEmployeeId(), loginRequest.getPassword()));
 
