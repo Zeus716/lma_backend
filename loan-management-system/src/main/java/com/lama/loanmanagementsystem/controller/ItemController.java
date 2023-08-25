@@ -62,7 +62,7 @@ public class ItemController {
         }
         else{
             item.setEmployee(employee.get());
-            item.setIssueStatus('T');
+            item.setIssueStatus('Y');
             LocalDate date = LocalDate.now();
             Date today = java.sql.Date.valueOf(date);
             Optional<LoanType> loans =loanTypeRep.findByLoanTypeIs(item.getItemCategory());
@@ -95,7 +95,12 @@ public class ItemController {
             item.get().setItemCategory(itemNew.getItemCategory());
             item.get().setItemDescription(itemNew.getItemDescription());
             item.get().setItemMake(itemNew.getItemMake());
-            item.get().setIssueStatus(itemNew.getIssueStatus());
+            if(itemNew.getIssueStatus()=='N'){
+                item.get().setIssueStatus(itemNew.getIssueStatus());
+                item.get().setEmployee(null);
+            }
+//            item.get().setIssueStatus(itemNew.getIssueStatus());
+
             item.get().setItemValuation(itemNew.getItemValuation());
             item.get().setIssueDate(itemNew.getIssueDate());
             item.get().setReturnDate(itemNew.getReturnDate());
@@ -129,13 +134,14 @@ public class ItemController {
                 }
 //            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 item.get().setIssueDate(today);
+
                 Integer numMonths = loans.get().getDurationInMonths();
                 LocalDate returnDate = LocalDate.now().plusMonths(numMonths);
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
                 String formatted = returnDate.format(formatter);
                 Date finalDate = new SimpleDateFormat("yyyy-MM-dd").parse(formatted);
                 item.get().setReturnDate(finalDate);
-                LoanMaster loan = new LoanMaster(loans.get(),employee.get());
+                LoanMaster loan = new LoanMaster(loans.get(),employee.get(),today);
 //                LoanMaster loan = new LoanMaster(item.get().getItemId(),loans.get(),employee.get());
                 loanRep.save(loan);
                 itemrep.save(item.get());
@@ -151,6 +157,11 @@ public class ItemController {
     public ResponseEntity<?> getAvailableItems(){
         return new ResponseEntity<>(itemrep.findByIssueStatusIs('F'),HttpStatus.OK);
 
+    }
+
+    @GetMapping("items/{item_id}")
+    public ResponseEntity<?> getItemId(@PathVariable(value = "item_id")String itemId){
+        return new ResponseEntity<>(itemrep.findById(itemId),HttpStatus.OK);
     }
 
     @GetMapping("employees/{id}/items")

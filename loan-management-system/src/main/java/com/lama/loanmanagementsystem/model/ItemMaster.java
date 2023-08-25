@@ -28,7 +28,7 @@ public class ItemMaster {
     private String itemUrl;
     private String itemDescription;
 //    @Column(columnDefinition = "default F")
-    private char issueStatus = 'F';
+    private char issueStatus = 'N';
     private String itemMake;
     private String itemCategory;
     @Temporal(TemporalType.DATE)

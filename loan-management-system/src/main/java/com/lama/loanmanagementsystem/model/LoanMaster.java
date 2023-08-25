@@ -1,5 +1,6 @@
 package com.lama.loanmanagementsystem.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,6 +9,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.annotation.Validated;
 
 import javax.persistence.*;
+import java.util.Date;
 
 @Entity
 @Table(name = "loanMaster")
@@ -32,6 +34,15 @@ public class LoanMaster {
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee")
      private EmployeeMaster employee;
+    @Temporal(TemporalType.DATE)
+    @JsonDeserialize(using = CustomDeserializer.class)
+    private Date loanIssueDate ;
+
+    public LoanMaster(LoanType loanType, EmployeeMaster employee, Date loanIssueDate) {
+        this.loanType = loanType;
+        this.employee = employee;
+        this.loanIssueDate = loanIssueDate;
+    }
 
     public LoanMaster(LoanType loanType, EmployeeMaster employee) {
         this.loanType = loanType;
