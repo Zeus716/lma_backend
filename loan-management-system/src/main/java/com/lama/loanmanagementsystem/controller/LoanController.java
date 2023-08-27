@@ -79,7 +79,7 @@ public class LoanController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("employees/{emp_id}/loans")
     public ResponseEntity<?> getAllLoansbyEmployee(@PathVariable(value = "emp_id") @Valid String employeeId){
         Optional<EmployeeMaster> employee =empRep.findById(employeeId);
