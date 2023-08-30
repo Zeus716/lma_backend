@@ -28,7 +28,7 @@ public class ItemMaster {
     private String itemUrl;
     private String itemDescription;
 //    @Column(columnDefinition = "default F")
-    private char issueStatus = 'F';
+    private char issueStatus = 'N';
     private String itemMake;
     private String itemCategory;
     @Temporal(TemporalType.DATE)
@@ -39,7 +39,7 @@ public class ItemMaster {
     private Date returnDate;
     private Integer itemValuation;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee")
 
     private EmployeeMaster employee;

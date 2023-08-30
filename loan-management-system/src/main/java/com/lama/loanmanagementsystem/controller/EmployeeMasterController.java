@@ -1,15 +1,9 @@
 package com.lama.loanmanagementsystem.controller;
 
-import com.lama.loanmanagementsystem.model.ERole;
+import com.lama.loanmanagementsystem.model.*;
 //import com.lama.loanmanagementsystem.model.employeeIssue;
-import com.lama.loanmanagementsystem.model.EmployeeMaster;
-import com.lama.loanmanagementsystem.model.Role;
-import com.lama.loanmanagementsystem.model.UserData;
-import com.lama.loanmanagementsystem.repository.EmployeeMasterRepository;
+import com.lama.loanmanagementsystem.repository.*;
 //import com.lama.loanmanagementsystem.repository.issueRepository;
-import com.lama.loanmanagementsystem.repository.ItemRepository;
-import com.lama.loanmanagementsystem.repository.RoleRepository;
-import com.lama.loanmanagementsystem.repository.UserRepository;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +13,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +27,8 @@ import java.util.Set;
 public class EmployeeMasterController {
     @Autowired
     private EmployeeMasterRepository empRep;
+    @Autowired
+    private LoanRepository loanRep;
     @Autowired
     private ItemRepository itemRep;
     
@@ -65,6 +63,11 @@ public class EmployeeMasterController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PostMapping("/employees")
     public ResponseEntity<?> createEmployee(@Valid @RequestBody EmployeeMaster employee){
+        LocalDate dob = employee.getEmployeeDOB().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate doj = employee.getEmployeeDOJ().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        if(!dob.plusYears(18).isBefore(doj)){
+            return new ResponseEntity<>("employee must be atleast 18 years old",HttpStatus.OK) ;
+        }
     	empRep.save(employee);
     	Set<Role> roles = new HashSet();
     	Optional<Role> userRole = roleRep.findByName(ERole.ROLE_USER);
@@ -101,6 +104,18 @@ public class EmployeeMasterController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/employees/{id}")
     public ResponseEntity<?> deleteEmployee(@Valid @PathVariable(value = "id") String emp_id){
+        List<LoanMaster> loans = loanRep.findByEmployee_EmployeeId(emp_id);
+        for(LoanMaster loan:loans){
+            loan.setEmployee(null);
+            loanRep.delete(loan);
+        }
+        List<ItemMaster> items = itemRep.findByEmployee_EmployeeId(emp_id);
+        for(ItemMaster item: items){
+            item.setEmployee(null);
+//            itemRep.delete(item);
+
+        }
+
         Optional<EmployeeMaster> employee = empRep.findById(emp_id);
         if(employee.isEmpty()){
             return new ResponseEntity<>("employee not found",HttpStatus.OK);

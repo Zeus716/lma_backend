@@ -1,9 +1,11 @@
 package com.lama.loanmanagementsystem.controller;
 
 import com.lama.loanmanagementsystem.model.EmployeeMaster;
+import com.lama.loanmanagementsystem.model.ItemMaster;
 import com.lama.loanmanagementsystem.model.LoanMaster;
 import com.lama.loanmanagementsystem.model.LoanType;
 import com.lama.loanmanagementsystem.repository.EmployeeMasterRepository;
+import com.lama.loanmanagementsystem.repository.ItemRepository;
 import com.lama.loanmanagementsystem.repository.LoanRepository;
 import com.lama.loanmanagementsystem.repository.LoanTypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 import java.util.Optional;
 
 @RequestMapping
@@ -27,15 +30,16 @@ public class LoanController {
     public EmployeeMasterRepository empRep;
     @Autowired
     public LoanTypeRepository loanTypeRep;
-
+    @Autowired
+    public ItemRepository itemRep;
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/loans/{id}")
 
-    public ResponseEntity<?> getLoans( @PathVariable(value = "id") @Valid String loan_id) {
-        Optional<LoanMaster> loan = loanRep.findById(loan_id);
+    public ResponseEntity<?> getLoans( @PathVariable(value = "id") @Valid String loanId) {
+        Optional<LoanMaster> loan = loanRep.findById(loanId);
         if (loan.isPresent()) {
             return new ResponseEntity<>(loan, HttpStatus.OK);
-        } else return new ResponseEntity<>("User doesn't exist with id :" + loan_id, HttpStatus.OK);
+        } else return new ResponseEntity<>("User doesn't exist with id :" + loanId, HttpStatus.OK);
     }
 
 //    @PostMapping("/loans")
@@ -45,11 +49,11 @@ public class LoanController {
 ////         return loanRep.save(loan);
 //    }
 @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PutMapping("/loans/{id}/employees/{employee_id}")
-    public ResponseEntity<?> updateLoans(@PathVariable(value="id") @Valid String loan_id,
+    @PutMapping("/loans/{id}/employees/{employee_id}") // ?
+    public ResponseEntity<?> updateLoans(@PathVariable(value="id") @Valid String loanId,
                                          @PathVariable(value = "employee_id") @Valid String employeeId,
                                          @RequestBody @Valid LoanMaster loan){
-        Optional<LoanMaster> loanexists = loanRep.findById(loan_id);
+        Optional<LoanMaster> loanexists = loanRep.findById(loanId);
         if (loanexists.isEmpty()) {
             return new ResponseEntity<>("loan id not found",HttpStatus.OK);
         }
@@ -64,7 +68,7 @@ public class LoanController {
         }
     }
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PostMapping("/loans/loantype/{loanType_id}") // resets values if not provided nned to fix
+    @PostMapping("/loans/loantype/{loanType_id}") // ?
     public ResponseEntity<?> createLoansLoanType(@PathVariable(value = "loanType_id") @Valid String loanTypeId
                                                  ){
         Optional<LoanType> loanexists = loanTypeRep.findById(loanTypeId);
@@ -79,7 +83,7 @@ public class LoanController {
         }
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+//    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("employees/{emp_id}/loans")
     public ResponseEntity<?> getAllLoansbyEmployee(@PathVariable(value = "emp_id") @Valid String employeeId){
         Optional<EmployeeMaster> employee =empRep.findById(employeeId);
@@ -104,7 +108,7 @@ public class LoanController {
 //            return new ResponseEntity<>(loan,HttpStatus.OK);
 //        }
 //    }
-@PreAuthorize("hasRole('ROLE_ADMIN')")
+@PreAuthorize("hasRole('ROLE_ADMIN')") // ?
     @PostMapping("loans/employees/{emp_id}/loantype/{id}")
     public ResponseEntity<?> createLoans(@PathVariable(value = "emp_id")@Valid String employeeId,
                                          @PathVariable(value = "id")@Valid String loanTypeId){
@@ -130,10 +134,10 @@ public class LoanController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @PutMapping("/loans/{id}/loanType/{loanType_id}") // resets values if not provided nned to fix
-    public ResponseEntity<?> updateLoansLoanType(@PathVariable(value="id") @Valid String loan_id,
+    public ResponseEntity<?> updateLoansLoanType(@PathVariable(value="id") @Valid String loanId,
                                                  @PathVariable(value = "loanType_id")@Valid String loanTypeId,
                                          @Valid @RequestBody LoanMaster loan){
-        Optional<LoanMaster> loanexists = loanRep.findById(loan_id);
+        Optional<LoanMaster> loanexists = loanRep.findById(loanId);
         if (loanexists.isEmpty()) {
             return new ResponseEntity<>("loan id not found",HttpStatus.OK);
         }
@@ -155,8 +159,8 @@ public class LoanController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/loans/{id}")
-    public ResponseEntity<?> deleteLoan(@Valid @PathVariable(value = "id") String loan_id){
-        Optional<LoanMaster> loanexists = loanRep.findById(loan_id);
+    public ResponseEntity<?> deleteLoan(@Valid @PathVariable(value = "id") String loanId){
+        Optional<LoanMaster> loanexists = loanRep.findById(loanId);
         if (loanexists.isEmpty()) {
             return new ResponseEntity<>("Loan not found",HttpStatus.OK);
         }
@@ -164,6 +168,10 @@ public class LoanController {
             loanexists.get().setEmployee(null);
             loanexists.get().setLoanType(null);
             loanexists.ifPresent(loanRep::delete);
+            Optional<ItemMaster> item = itemRep.findById(loanId);
+            item.get().setEmployee(null);
+            item.get().setReturnDate(null);
+            item.get().setIssueStatus('N');
             return new ResponseEntity<>("Loan deleted", HttpStatus.OK);
         }
     }

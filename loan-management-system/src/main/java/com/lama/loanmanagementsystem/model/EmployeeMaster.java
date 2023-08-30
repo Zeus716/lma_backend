@@ -1,10 +1,7 @@
 package com.lama.loanmanagementsystem.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.springframework.validation.annotation.Validated;
 
@@ -16,6 +13,7 @@ import java.util.Date;
 @Table(name = "employeeMaster")
 @Setter
 @Validated
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 public class EmployeeMaster {

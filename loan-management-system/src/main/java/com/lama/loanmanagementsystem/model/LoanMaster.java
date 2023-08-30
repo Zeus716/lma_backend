@@ -18,18 +18,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 public class LoanMaster {
     @Id
-    @GeneratedValue(generator = "shortUUIDgenerator")
-    @GenericGenerator(
-            name = "shortUUIDgenerator",
-            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
-    )
+//    @GeneratedValue(generator = "shortUUIDgenerator")
+//    @GenericGenerator(
+//            name = "shortUUIDgenerator",
+//            strategy = "com.lama.loanmanagementsystem.model.UUIDgenerator"
+//    )
     private String loanId ;
 //    private String employeeId;
     @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
     @JoinColumn(name ="loanType")
     private LoanType loanType;
 
-    @ManyToOne(cascade = CascadeType.ALL,fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.PERSIST,fetch = FetchType.EAGER)
     @JoinColumn(name = "employee")
      private EmployeeMaster employee;
 
